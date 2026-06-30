@@ -79,6 +79,23 @@ Universidad de La Frontera, Magíster en Ingeniería Informática. Material de c
 
 ---
 
+### Isomorfismo de Subgrafos Cuántico
+
+**Mariella, N., & Simonetto, A. (2023).** A Quantum Algorithm for the Sub-graph Isomorphism
+Problem.
+*ACM Transactions on Quantum Computing*, 4(2), Article 13, pp. 1–34.
+https://doi.org/10.1145/3569095
+arXiv:2111.09732
+
+> Verificado: publicado en ACM TQC, febrero 2023. DOI activo en ACM Digital Library.
+> IBM Research lista este paper en su portal de publicaciones. Código disponible en
+> github.com/qiskit-community/subgraph-isomorphism.
+> **Referencia central del trabajo**: propone un método variacional cuántico para
+> isomorfismo de subgrafos usando codificación logarítmica de qubits (⌈log₂ N⌉),
+> idéntico al enfoque descrito en REQ-HIB-01 y REQ-HIB-02 de este análisis.
+
+---
+
 ### Detección de Fraude en Grafos
 
 **Blanuša, J., Cravero Baraja, M., Anghel, A., von Niederhäusern, L., Altman, E.,
@@ -94,6 +111,56 @@ https://doi.org/10.1145/3677052.3698674
 > este paper con los autores "Shirakawa, M., Suzumura, T., & Kanezashi, H." — esos nombres
 > NO corresponden a este artículo. Los autores reales son los indicados arriba
 > (verificado en arXiv y ACM Digital Library).
+
+---
+
+**Innan, N., Sawaika, A., Dhor, A., Dutta, S., Thota, S., Gokal, H., Patel, N.,
+Khan, M. A.-Z., Theodonis, I., & Bennai, M. (2024).** Financial Fraud Detection using
+Quantum Graph Neural Networks.
+*Quantum Machine Intelligence*, 6(1).
+https://doi.org/10.1007/s42484-024-00143-6
+arXiv:2309.01127
+
+> Verificado: publicado en Quantum Machine Intelligence (Springer), febrero 2024.
+> DOI activo en SpringerLink y paper accesible en arXiv.
+> Propone QGNNs (Quantum Graph Neural Networks) con Variational Quantum Circuits para
+> detección de fraude financiero; comparado contra GNNs clásicos en datasets reales.
+
+---
+
+**Wang, Y. J., Yang, X., Ju, C., Zhang, Y., Zhang, J., Xu, Q., Wang, Y., Gao, X.,
+Cao, X., Ma, Y., & Wu, J. (2024).** Quantum Computing in Community Detection for
+Anti-Fraud Applications.
+*Entropy*, 26(12), 1026.
+https://doi.org/10.3390/e26121026
+
+> Verificado: publicado el 27 de noviembre de 2024 en MDPI Entropy (ISSN 1099-4300).
+> DOI activo. Indexado en PubMed (PMC11727351) y acceso abierto confirmado.
+> Usa un Coherent Ising Machine (CIM) para resolver el modelo QUBO de detección de
+> comunidades en grafos de transacciones con 308 nodos.
+
+---
+
+**Vlasic, A., & Pham, A. (2025).** Scoring Anomalous Vertices Through Quantum Walks.
+*Annalen der Physik*, 537(5), Article 2400282.
+https://doi.org/10.1002/andp.202400282
+arXiv:2311.09855
+
+> Verificado: publicado el 16 de febrero de 2025 en Annalen der Physik (Wiley Online Library).
+> DOI activo. Primer algoritmo cuántico para calcular el puntaje de anomalía de cada nodo
+> de un grafo mediante caminatas cuánticas continuas. Contempla el contexto NISQ.
+
+---
+
+**Doost, M., & Manthouri, M. (2025).** Quantum Topological Graph Neural Networks for
+Detecting Complex Fraud Patterns.
+arXiv:2512.03696.
+https://arxiv.org/abs/2512.03696
+
+> Verificado: preprint en arXiv (diciembre 2025), accesible y activo.
+> Propone el framework QTGNN: embedding cuántico con entrelazamiento, convoluciones
+> variacionales cuánticas y análisis topológico de datos. Evaluado sobre PaySim y Elliptic.
+> Incluye garantías de convergencia para hardware NISQ.
 
 ---
 
@@ -124,3 +191,13 @@ https://doi.org/10.1145/3639315
 |--------------------|----------|-----------|
 | Shirakawa, M. et al. (2024) | Autores completamente incorrectos para arXiv:2402.08593 | Reemplazado por Blanuša, J. et al. (2024) con autores verificados |
 | Sun, Z. et al. (2024). TechRxiv | Autores y DOI no confirmados | Eliminado; se sugiere Zhang et al. (2024) como alternativa verificada |
+
+## Referencias Nuevas Incorporadas
+
+| Paper | Relevancia para el trabajo |
+|-------|--------------------------|
+| Mariella & Simonetto (2023). ACM TQC | **Directa**: algoritmo cuántico para isomorfismo de subgrafos exactamente |
+| Vlasic & Pham (2025). Annalen der Physik | Caminatas cuánticas para detección de anomalías en grafos |
+| Wang et al. (2024). Entropy | Quantum computing aplicado a detección de fraude en redes de transacciones |
+| Innan et al. (2024). Quantum Machine Intelligence | QGNNs híbridos para fraude financiero |
+| Doost & Manthouri (2025). arXiv | QTGNN: framework cuántico-topológico para fraude complejo |
