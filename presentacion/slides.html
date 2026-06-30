@@ -112,23 +112,60 @@
     <h2>Recorrido de la presentación</h2>
     <div class="grid2">
       <div>
-        <div class="flow-step"><b class="accent2">01</b> &nbsp; Problema central: isomorfismo de subgrafos</div>
-        <div class="flow-step"><b class="accent2">02</b> &nbsp; Por qué el cómputo clásico no escala</div>
-        <div class="flow-step"><b class="accent2">03</b> &nbsp; Solución cuántica: Algoritmo de Grover</div>
-        <div class="flow-step"><b class="accent2">04</b> &nbsp; Arquitectura híbrida clásico-cuántica</div>
+        <div class="flow-step"><b class="accent2">01</b> &nbsp; Problema de negocio: fraude circular y AML</div>
+        <div class="flow-step"><b class="accent2">02</b> &nbsp; Problema central: isomorfismo de subgrafos</div>
+        <div class="flow-step"><b class="accent2">03</b> &nbsp; NP-Completo: el límite teórico clásico</div>
+        <div class="flow-step"><b class="accent2">04</b> &nbsp; Qué ofrece el cómputo cuántico que el clásico no</div>
+        <div class="flow-step"><b class="accent2">05</b> &nbsp; Solución cuántica: Algoritmo de Grover</div>
       </div>
       <div>
-        <div class="flow-step"><b class="accent2">05</b> &nbsp; Prueba de concepto ejecutable (Qiskit)</div>
-        <div class="flow-step"><b class="accent2">06</b> &nbsp; Escalado del problema (N=4..12)</div>
-        <div class="flow-step"><b class="accent2">07</b> &nbsp; Limitaciones NISQ y veredicto QSRE</div>
-        <div class="flow-step"><b class="accent2">08</b> &nbsp; Referencias verificadas</div>
+        <div class="flow-step"><b class="accent2">06</b> &nbsp; Arquitectura híbrida clásico-cuántica</div>
+        <div class="flow-step"><b class="accent2">07</b> &nbsp; Metodología de prueba: Qiskit AerSimulator</div>
+        <div class="flow-step"><b class="accent2">08</b> &nbsp; Prueba de concepto y resultados empíricos</div>
+        <div class="flow-step"><b class="accent2">09</b> &nbsp; Escalado del problema (N=4..12)</div>
+        <div class="flow-step"><b class="accent2">10</b> &nbsp; Limitaciones NISQ, veredicto QSRE y referencias</div>
       </div>
     </div>
   </div>
   <div class="pageno">2</div>
 </section>
 
-<!-- 3. PROBLEM STATEMENT -->
+<!-- 3. BUSINESS PROBLEM -->
+<section class="slide content-bg">
+  <div class="content-zone">
+    <div class="kicker-small">00 · Problema de Negocio</div>
+    <h2>El costo real del fraude circular</h2>
+    <div class="grid2">
+      <div>
+        <p>El lavado de dinero mediante <b>fraude circular</b> es un problema de cumplimiento normativo
+          (AML — Anti-Money Laundering) que enfrentan bancos, fintechs y unidades de inteligencia financiera.</p>
+        <ul>
+          <li>La <b>UNODC</b> estima que el lavado de dinero representa entre el
+            <b class="accent2">2% y 5% del PIB mundial</b> cada año (~US$800.000M – 2 billones).</li>
+          <li>En Chile, la <b>UAF</b> (Unidad de Análisis Financiero, Ley 19.913) exige a la banca reportar
+            operaciones sospechosas (ROS) dentro de plazos acotados.</li>
+          <li>El estándar internacional lo define el <b>GAFI/FATF</b> mediante sus 40 recomendaciones.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>El dolor operativo</h3>
+        <p style="font-size:13px;">Los motores de reglas actuales degradan al buscar ciclos de 3+ saltos
+          sobre millones de cuentas:</p>
+        <table style="font-size:12px;">
+          <tr><td>Investigación manual por analista</td><td class="mono">horas/caso</td></tr>
+          <tr><td>Casos pendientes de revisión</td><td class="mono accent2">miles/mes</td></tr>
+          <tr><td>Falsos positivos por reglas rígidas</td><td class="mono accent2">&gt;90%</td></tr>
+          <tr><td>Ventana de detección</td><td class="mono">días, no minutos</td></tr>
+        </table>
+        <p style="font-size:12px; margin-top:8px; color:#6b7390;">Cada hora de retraso facilita que los
+          fondos salgan del sistema financiero rastreable.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pageno">3</div>
+</section>
+
+<!-- 4. PROBLEM STATEMENT (math) -->
 <section class="slide content-bg">
   <div class="content-zone">
     <div class="kicker-small">01 · Problema Central</div>
@@ -155,17 +192,52 @@
       </div>
     </div>
   </div>
-  <div class="pageno">3</div>
+  <div class="pageno">4</div>
 </section>
 
-<!-- 4. CLASSICAL COMPLEXITY -->
+<!-- 5. NP-COMPLETE -->
 <section class="slide content-bg">
   <div class="content-zone">
-    <div class="kicker-small">02 · Limitación Clásica</div>
-    <h2>Por qué el software tradicional no escala</h2>
+    <div class="kicker-small">02 · Complejidad Computacional</div>
+    <h2>NP-Completo: por qué no existe atajo clásico</h2>
     <div class="grid2">
       <div>
-        <p>Demostrado <b class="accent2">NP-Completo</b> por Ullmann (1976). El número de mapeos candidatos a evaluar:</p>
+        <p>El isomorfismo de subgrafos es un problema de <b>decisión</b>: ¿existe un mapeo f
+          que satisfaga el patrón?</p>
+        <div class="flow-step"><b class="check">Verificar</b> una solución candidata es <b>rápido</b>:
+          comprobar k aristas toma O(k) pasos.</div>
+        <div class="flow-step"><b class="cross">Encontrarla</b> requiere explorar el espacio de mapeos —
+          no se conoce atajo mejor que la enumeración (o variantes podadas como VF2).</div>
+        <p style="font-size:13px;">Esta asimetría —verificar en tiempo polinomial, resolver presumiblemente
+          en tiempo exponencial— es la definición misma de la clase <b class="accent">NP</b>.</p>
+      </div>
+      <div class="card">
+        <h3>La prueba de Ullmann (1976)</h3>
+        <p style="font-size:13px;">Ullmann demostró que el isomorfismo de subgrafos es
+          <b class="accent2">NP-Completo</b> mediante reducción desde el problema de la <b>clique</b>
+          (también NP-Completo): toda instancia de clique se transforma en una instancia de isomorfismo
+          de subgrafos en tiempo polinomial.</p>
+        <p style="font-size:13px; margin-top:10px;">Consecuencia práctica: si existiera un algoritmo
+          clásico polinomial para este problema, resolvería <b>todo NP en tiempo polinomial</b> (P = NP) —
+          algo que 50 años de investigación no han logrado demostrar ni refutar.</p>
+        <p style="font-size:12px; margin-top:10px; color:#6b7390;">Por eso la industria recurre a
+          heurísticas (VF2, poda por grado) que funcionan bien en promedio pero degradan en el peor caso —
+          justo el caso de los anillos de fraude bien disimulados.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pageno">5</div>
+</section>
+
+<!-- 6. CANDIDATE COUNT / PRODUCTION SYMPTOMS -->
+<section class="slide content-bg">
+  <div class="content-zone">
+    <div class="kicker-small">02 · Complejidad Computacional</div>
+    <h2>Del NP-Completo al conteo exacto de candidatos</h2>
+    <div class="grid2">
+      <div>
+        <p>Para el patrón de fraude circular (k=3 nodos) sobre un host de N cuentas, el número de
+          mapeos candidatos a evaluar es:</p>
         <div class="card mono" style="text-align:center; font-size:17px;">
           |Candidatos| = N! / (N−k)!
         </div>
@@ -186,13 +258,47 @@
       </div>
     </div>
   </div>
-  <div class="pageno">4</div>
+  <div class="pageno">6</div>
 </section>
 
-<!-- 5. GROVER SOLUTION -->
+<!-- 7. WHAT QUANTUM OFFERS -->
 <section class="slide content-bg">
   <div class="content-zone">
-    <div class="kicker-small">03 · Solución Cuántica</div>
+    <div class="kicker-small">03 · Ventaja Cuántica</div>
+    <h2>¿Qué ofrece el cómputo cuántico que el clásico no?</h2>
+    <div class="grid2">
+      <div class="card" style="border-left-color:#c0334d;">
+        <h3>Cómputo clásico</h3>
+        <ul style="font-size:13px;">
+          <li>Evalúa los candidatos <b>uno a la vez</b> (o en paralelo con N procesadores físicos)</li>
+          <li>Representar el espacio de N candidatos requiere <b>N registros</b> distintos en algún momento</li>
+          <li>No existe forma de "consultar" el espacio completo en una sola operación</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Cómputo cuántico</h3>
+        <ul style="font-size:13px;">
+          <li>Codifica los N candidatos en <b class="accent">log₂N qubits</b> mediante superposición —
+            estructura exponencial en espacio logarítmico</li>
+          <li>El oráculo aplica una <b>única operación unitaria</b> sobre todos los estados a la vez
+            (no es "probar todo en paralelo" mágicamente — invierte fases)</li>
+          <li>La <b>interferencia</b> (difusor) amplifica la amplitud de las soluciones válidas y
+            cancela el resto, sin enumeración explícita</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align:center; margin-top:20px; font-size:13px; color:#6b7390;">Aclaración común: Grover
+      <b>no</b> evalúa todos los candidatos "a la vez" como una búsqueda paralela ilimitada — usa
+      interferencia de amplitudes para sesgar la probabilidad de medición hacia las soluciones,
+      logrando O(√N) consultas en vez de O(N).</p>
+  </div>
+  <div class="pageno">7</div>
+</section>
+
+<!-- 8. GROVER SOLUTION -->
+<section class="slide content-bg">
+  <div class="content-zone">
+    <div class="kicker-small">04 · Solución Cuántica</div>
     <h2>Algoritmo de Grover (1996)</h2>
     <div class="grid2">
       <div>
@@ -214,13 +320,13 @@
       </div>
     </div>
   </div>
-  <div class="pageno">5</div>
+  <div class="pageno">8</div>
 </section>
 
-<!-- 6. COMPLEXITY TABLE -->
+<!-- 9. COMPLEXITY TABLE -->
 <section class="slide content-bg">
   <div class="content-zone">
-    <div class="kicker-small">03 · Solución Cuántica</div>
+    <div class="kicker-small">04 · Solución Cuántica</div>
     <h2>Ventaja cuadrática</h2>
     <div style="display:flex; align-items:center; justify-content:center; height: 78%;">
       <table style="font-size:18px; max-width:780px;">
@@ -234,13 +340,13 @@
     <p style="text-align:center; font-size:16px;">Búsqueda en 10⁶ elementos con solo
       <b class="accent2">1.000</b> evaluaciones del oráculo.</p>
   </div>
-  <div class="pageno">6</div>
+  <div class="pageno">9</div>
 </section>
 
-<!-- 7. HYBRID ARCHITECTURE -->
+<!-- 10. HYBRID ARCHITECTURE -->
 <section class="slide content-bg">
   <div class="content-zone">
-    <div class="kicker-small">04 · Arquitectura</div>
+    <div class="kicker-small">05 · Arquitectura</div>
     <h2>Esquema híbrido clásico-cuántico</h2>
     <div class="grid3">
       <div class="card">
@@ -264,13 +370,13 @@
       para consultas de alta profundidad.
     </p>
   </div>
-  <div class="pageno">7</div>
+  <div class="pageno">10</div>
 </section>
 
-<!-- 8. QSRE REQUIREMENTS -->
+<!-- 11. QSRE REQUIREMENTS -->
 <section class="slide content-bg">
   <div class="content-zone">
-    <div class="kicker-small">04 · Arquitectura</div>
+    <div class="kicker-small">05 · Arquitectura</div>
     <h2>Requerimientos QSRE</h2>
     <table style="font-size:13px;">
       <tr><th>ID</th><th>Tipo</th><th>Descripción</th></tr>
@@ -282,13 +388,46 @@
       <tr><td class="mono">RNF-01/02/03</td><td>No Funcional</td><td>Sobrecosto QRAM acotado · tolerancia a ruido NISQ · acceso QPU solo si conviene</td></tr>
     </table>
   </div>
-  <div class="pageno">8</div>
+  <div class="pageno">11</div>
 </section>
 
-<!-- 9. DEMO MIN -->
+<!-- 12. TEST METHODOLOGY: AERSIMULATOR -->
 <section class="slide content-bg">
   <div class="content-zone">
-    <div class="kicker-small">05 · Prueba de Concepto</div>
+    <div class="kicker-small">06 · Metodología de Prueba</div>
+    <h2>Validación empírica: Qiskit AerSimulator</h2>
+    <div class="grid2">
+      <div>
+        <p><b>AerSimulator</b> es el simulador de vector de estado de Qiskit: ejecuta el circuito
+          cuántico exacto (sin ruido de hardware real) y permite muestrear ("shots") la distribución
+          de probabilidad resultante.</p>
+        <table style="font-size:12px;">
+          <tr><td>Backend CPU</td><td class="mono">AerSimulator() — statevector</td></tr>
+          <tr><td>Backend GPU</td><td class="mono">device='GPU' (cuStateVec)</td></tr>
+          <tr><td>Shots por ejecución</td><td class="mono">1.024 – 4.096</td></tr>
+          <tr><td>Semilla</td><td class="mono">fija (reproducibilidad)</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Protocolo de prueba (5 pasos)</h3>
+        <div class="flow-step">1 — Generar grafo host con semilla fija y ciclo de fraude garantizado</div>
+        <div class="flow-step">2 — Enumerar la verdad fundamental (ground truth) por fuerza bruta clásica</div>
+        <div class="flow-step">3 — Construir y ejecutar el circuito de Grover en AerSimulator</div>
+        <div class="flow-step">4 — Comparar los estados más medidos vs. la verdad fundamental</div>
+        <div class="flow-step">5 — Repetir el barrido para N = 4..12 nodos</div>
+      </div>
+    </div>
+    <p style="text-align:center; margin-top:16px; font-size:13px;">Resultado:
+      <b class="accent">99–100% de éxito empírico</b> en todos los tamaños probados, consistente con
+      la probabilidad teórica de Grover.</p>
+  </div>
+  <div class="pageno">12</div>
+</section>
+
+<!-- 13. DEMO MIN -->
+<section class="slide content-bg">
+  <div class="content-zone">
+    <div class="kicker-small">07 · Prueba de Concepto</div>
     <h2>Demo mínimo — 4 nodos, 3 qubits</h2>
     <div class="grid2">
       <div>
@@ -309,13 +448,13 @@
       </div>
     </div>
   </div>
-  <div class="pageno">9</div>
+  <div class="pageno">13</div>
 </section>
 
-<!-- 10. SCALING -->
+<!-- 14. SCALING -->
 <section class="slide content-bg">
   <div class="content-zone">
-    <div class="kicker-small">06 · Escalado</div>
+    <div class="kicker-small">08 · Escalado</div>
     <h2>De 4 a 12 nodos: codificación logarítmica</h2>
     <div class="grid2">
       <div>
@@ -335,26 +474,26 @@
       </div>
     </div>
   </div>
-  <div class="pageno">10</div>
+  <div class="pageno">14</div>
 </section>
 
-<!-- 11. SCALING HISTOGRAM -->
+<!-- 15. SCALING HISTOGRAM -->
 <section class="slide content-bg">
   <div class="content-zone">
-    <div class="kicker-small">06 · Escalado</div>
+    <div class="kicker-small">08 · Escalado</div>
     <h2>Amplificación de estados válidos (N=8, 9 qubits)</h2>
     <div style="display:flex; align-items:center; justify-content:center; height:78%;">
       <img class="fig" src="../demo/histograma_N8_q9.png" style="max-height:430px;">
     </div>
     <p style="text-align:center; font-size:13px; color:#6b7390;">336 mapeos candidatos codificados en 9 qubits — éxito empírico ~99%.</p>
   </div>
-  <div class="pageno">11</div>
+  <div class="pageno">15</div>
 </section>
 
-<!-- 12. NISQ LIMITATIONS -->
+<!-- 16. NISQ LIMITATIONS -->
 <section class="slide content-bg">
   <div class="content-zone">
-    <div class="kicker-small">07 · Limitaciones</div>
+    <div class="kicker-small">09 · Limitaciones</div>
     <h2>Restricciones de la era NISQ</h2>
     <div class="grid2">
       <div class="card">
@@ -375,13 +514,13 @@
     <p style="margin-top:16px; font-size:14px;"><span class="warn">⚠</span> Resultados probabilísticos: requieren
       1024–4096 shots para una distribución estadísticamente confiable.</p>
   </div>
-  <div class="pageno">12</div>
+  <div class="pageno">16</div>
 </section>
 
-<!-- 13. VERDICT -->
+<!-- 17. VERDICT -->
 <section class="slide content-bg">
   <div class="content-zone">
-    <div class="kicker-small">07 · Veredicto QSRE</div>
+    <div class="kicker-small">09 · Veredicto QSRE</div>
     <h2>Parcialmente Factible / Exploratorio</h2>
     <table style="font-size:14px;">
       <tr><th>Dimensión</th><th>Estado</th><th>Notas</th></tr>
@@ -397,13 +536,13 @@
       No se recomienda reemplazar el motor de base de datos clásico.
     </p>
   </div>
-  <div class="pageno">13</div>
+  <div class="pageno">17</div>
 </section>
 
-<!-- 14. REFERENCES -->
+<!-- 18. REFERENCES -->
 <section class="slide content-bg">
   <div class="content-zone">
-    <div class="kicker-small">08 · Referencias</div>
+    <div class="kicker-small">10 · Referencias</div>
     <h2>Referencias verificadas (selección)</h2>
     <div class="grid2">
       <div>
@@ -429,10 +568,10 @@
     </div>
     <p style="margin-top:4px; font-size:12px; color:#9aa1bd;">Lista completa con notas de verificación en REFERENCIAS.md.</p>
   </div>
-  <div class="pageno">14</div>
+  <div class="pageno">18</div>
 </section>
 
-<!-- 15. THANK YOU -->
+<!-- 19. THANK YOU -->
 <section class="slide title-bg">
   <div class="title-zone">
     <h1 style="font-size:40px;">Gracias</h1>
