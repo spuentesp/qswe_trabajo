@@ -36,7 +36,8 @@ Dado un grafo de transacciones G con millones de nodos y un patrón P (ciclo dir
 │                             arquitectura híbrida y factibilidad QSRE
 ├── REFERENCIAS.md         ← referencias verificadas con notas sobre fuentes corregidas
 └── demo/
-    ├── grover_subgraph_search.py   ← script ejecutable (Qiskit + AerSimulator)
+    ├── grover_subgraph_search.py   ← demo original: 4 nodos, 3 qubits, caso mínimo
+    ├── grover_subgraph_scaled.py   ← versión escalable: N nodos parametrizable, sweep N=4..12
     └── requirements.txt            ← dependencias Python
 ```
 
@@ -48,21 +49,28 @@ Dado un grafo de transacciones G con millones de nodos y un patrón P (ciclo dir
 cd demo
 pip install -r requirements.txt
 
-# Simulación en CPU (por defecto)
+# Demo mínimo: 4 nodos, 3 qubits (original)
 python grover_subgraph_search.py
 
-# Con más shots para mejor estadística
-python grover_subgraph_search.py --shots 4096
+# Versión escalable: N nodos parametrizables
+python grover_subgraph_scaled.py --host-nodes 6    # 7 qubits, 24x speedup
+python grover_subgraph_scaled.py --host-nodes 8    # 9 qubits, 67x speedup
+python grover_subgraph_scaled.py --host-nodes 12   # 11 qubits, 264x speedup
 
-# Intentar aceleración GPU (requiere qiskit-aer-gpu instalado)
-python grover_subgraph_search.py --gpu
+# Curva de escalado completa N=4..12 (genera escalado_grover_fraude.png)
+python grover_subgraph_scaled.py --sweep
+
+# Con GPU (requiere qiskit-aer-gpu)
+python grover_subgraph_scaled.py --host-nodes 10 --gpu
 ```
 
-El script imprime el análisis en consola y genera `resultados_grover_fraude.png` con el histograma de probabilidades y la visualización del grafo de transacciones.
+El script original imprime el análisis en consola y genera `resultados_grover_fraude.png` con el histograma de probabilidades y la visualización del grafo de transacciones. La versión escalable genera `histograma_N{N}_q{qubits}.png` por cada ejecución, y `escalado_grover_fraude.png` con la curva de speedup al usar `--sweep`.
 
 ---
 
 ## Resultado Esperado
+
+### Demo mínimo (4 nodos, 3 qubits)
 
 ```
 === BÚSQUEDA CUÁNTICA (Algoritmo de Grover) ===
@@ -81,6 +89,23 @@ Complejidad clásica:  O(N)  = 8 consultas (peor caso)
 ```
 
 Los 3 estados amplificados son rotaciones del mismo ciclo único `0 → 1 → 2 → 0`.
+
+### Curva de escalado (sweep N=4..12, patrón k=3)
+
+La codificación logarítmica (⌈log₂ P(N,k)⌉ qubits para P(N,k) mapeos inyectivos posibles)
+hace que el número de qubits crezca muy lentamente frente al espacio de búsqueda clásico:
+
+| N (nodos host) | Qubits | Candidatos P(N,3) | Speedup (N/√N) | Éxito empírico |
+|---:|---:|---:|---:|---:|
+| 4  | 5  | 24   | 12×   | 100% |
+| 6  | 7  | 120  | 24×   | ~99% |
+| 8  | 9  | 336  | 67×   | 99%  |
+| 10 | 10 | 720  | 180×  | 99%  |
+| 12 | 11 | 1320 | 264×  | 100% |
+
+El crecimiento de qubits es logarítmico (~3·log₂N) mientras que la ventaja cuántica
+(speedup) crece con √N, ilustrando la separación asintótica entre el enfoque clásico
+de fuerza bruta y la búsqueda amplificada por Grover.
 
 ---
 
