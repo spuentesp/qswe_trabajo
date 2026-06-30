@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Búsqueda Cuántica de Subgrafos — UFRO</title>
+<style>
+  @page { size: 1280px 720px; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; font-family: 'Helvetica Neue', Arial, sans-serif; }
+
+  .slide {
+    width: 1280px;
+    height: 720px;
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  .slide:last-child { page-break-after: auto; }
+
+  .title-bg   { background-image: url('assets/ufro_bg_title.png'); }
+  .content-bg { background-image: url('assets/ufro_bg_content.png'); }
+
+  /* ---- Title / closing slide zone (between logo box and footer band) ---- */
+  .title-zone {
+    position: absolute;
+    top: 300px; left: 90px; right: 90px; height: 230px;
+    color: #ffffff;
+    display: flex; flex-direction: column; justify-content: center;
+    text-align: center;
+    align-items: center;
+  }
+  .title-zone h1 { font-size: 33px; margin: 0 0 8px 0; font-weight: 700; line-height: 1.2; }
+  .title-zone .subtitle { font-size: 17px; font-weight: 400; margin: 0 0 14px 0; color: #d9e6ff; max-width: 820px; }
+  .title-zone .author-block { font-size: 14px; line-height: 1.6; color: #eef3ff; }
+  .title-zone .kicker { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #9fc4ff; margin-bottom: 6px; font-weight: 600; }
+
+  /* ---- Content slide zone (white body, between header bar and footer band) ---- */
+  .content-zone {
+    position: absolute;
+    top: 34px; left: 80px; right: 80px; bottom: 145px;
+    color: #15182b;
+  }
+  .content-zone h2 {
+    font-size: 30px; margin: 0 0 22px 0; font-weight: 700; color: #15182b;
+    border-bottom: 3px solid #1fb8d8; padding-bottom: 10px; display: inline-block;
+  }
+  .kicker-small {
+    font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: #5a6fd8; margin-bottom: 6px; font-weight: 700;
+  }
+  p, li { font-size: 16px; line-height: 1.5; color: #353a52; }
+  ul { padding-left: 20px; margin: 0; }
+  li { margin-bottom: 8px; }
+  .accent { color: #1f7fd8; }
+  .accent2 { color: #c0334d; }
+  .mono { font-family: 'SF Mono', Consolas, monospace; color: #1f7fd8; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  .card {
+    background: #f4f7fc; border: 1px solid #dde4f3; border-left: 4px solid #1fb8d8;
+    border-radius: 8px; padding: 16px 20px;
+  }
+  .card h3 { font-size: 17px; margin: 0 0 8px 0; font-weight: 700; color: #c0334d; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { padding: 7px 10px; text-align: left; border-bottom: 1px solid #e2e7f3; }
+  th { color: #1f7fd8; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  tr:last-child td { border-bottom: none; }
+  .big-num { font-size: 48px; font-weight: 800; color: #1f7fd8; line-height: 1; }
+  .small-cap { font-size: 12px; color: #6b7390; text-transform: uppercase; letter-spacing: 1px; }
+  img.fig { max-width: 100%; border-radius: 8px; border: 1px solid #dde4f3; }
+  .flow-step {
+    background: #f4f7fc; border: 1px solid #dde4f3; border-left: 4px solid #c0334d;
+    border-radius: 8px; padding: 10px 16px; font-size: 14px; margin-bottom: 8px;
+  }
+  .check { color: #2f8f4f; font-weight: 700; }
+  .cross { color: #c0334d; font-weight: 700; }
+  .warn { color: #b8860b; font-weight: 700; }
+  .ref { font-size: 13px; margin-bottom: 11px; color: #353a52; }
+  .ref b { color: #15182b; }
+  .ref .doi { color: #6b7390; font-size: 11px; }
+  .pageno { position: absolute; bottom: 14px; right: 24px; font-size: 11px; color: #ffffff; opacity: 0.75; z-index: 2; }
+  .badge {
+    display: inline-block; padding: 3px 12px; border-radius: 16px;
+    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.5);
+    color: #ffffff; font-size: 12px; font-weight: 600; margin-right: 6px;
+  }
+</style>
+</head>
+<body>
+
+<!-- 1. TITLE -->
+<section class="slide title-bg">
+  <div class="title-zone">
+    <div class="kicker">EMI307 · Especificación de Requerimientos · Módulo 2</div>
+    <h1>Búsqueda Cuántica de Subgrafos<br>Detección de Fraude Circular</h1>
+    <p class="subtitle">Factibilidad de computación cuántica como coprocesador para isomorfismo de subgrafos en grafos transaccionales masivos.</p>
+    <div class="author-block">
+      Alumno: Sebastián Eduardo Puentes Prieto<br>
+      Magíster en Ingeniería Informática · Docente: Dr. Samuel Sepúlveda<br>
+      Mayo 2026
+    </div>
+  </div>
+</section>
+
+<!-- 2. AGENDA -->
+<section class="slide content-bg">
+  <div class="content-zone">
+    <div class="kicker-small">Agenda</div>
+    <h2>Recorrido de la presentación</h2>
+    <div class="grid2">
+      <div>
+        <div class="flow-step"><b class="accent2">01</b> &nbsp; Problema central: isomorfismo de subgrafos</div>
+        <div class="flow-step"><b class="accent2">02</b> &nbsp; Por qué el cómputo clásico no escala</div>
+        <div class="flow-step"><b class="accent2">03</b> &nbsp; Solución cuántica: Algoritmo de Grover</div>
+        <div class="flow-step"><b class="accent2">04</b> &nbsp; Arquitectura híbrida clásico-cuántica</div>
+      </div>
+      <div>
+        <div class="flow-step"><b class="accent2">05</b> &nbsp; Prueba de concepto ejecutable (Qiskit)</div>
+        <div class="flow-step"><b class="accent2">06</b> &nbsp; Escalado del problema (N=4..12)</div>
+        <div class="flow-step"><b class="accent2">07</b> &nbsp; Limitaciones NISQ y veredicto QSRE</div>
+        <div class="flow-step"><b class="accent2">08</b> &nbsp; Referencias verificadas</div>
+      </div>
+    </div>
+  </div>
+  <div class="pageno">2</div>
+</section>
+
+<!-- 3. PROBLEM STATEMENT -->
+<section class="slide content-bg">
+  <div class="content-zone">
+    <div class="kicker-small">01 · Problema Central</div>
+    <h2>Isomorfismo de subgrafos</h2>
+    <div class="grid2">
+      <div>
+        <p>Dados dos grafos dirigidos:</p>
+        <ul>
+          <li><b>Grafo host</b> G = (V<sub>G</sub>, E<sub>G</sub>): millones de cuentas/transacciones</li>
+          <li><b>Grafo patrón</b> P = (V<sub>P</sub>, E<sub>P</sub>): ciclo de fraude de 3 nodos</li>
+        </ul>
+        <p>Se busca una función inyectiva f: V<sub>P</sub> → V<sub>G</sub> tal que:</p>
+        <div class="card mono" style="text-align:center; font-size:17px;">
+          ∀(u,v) ∈ E<sub>P</sub> → (f(u), f(v)) ∈ E<sub>G</sub>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Caso: Fraude Circular (AML)</h3>
+        <p>Fondos ilícitos circulan entre cuentas antes de volver al origen, dificultando el rastreo.</p>
+        <div class="mono" style="text-align:center; margin:14px 0; font-size:19px;">
+          A → B → C → A
+        </div>
+        <p style="font-size:13px; color:#6b7390;">Patrón P: 3 nodos, 3 aristas dirigidas formando un ciclo.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pageno">3</div>
+</section>
+
+<!-- 4. CLASSICAL COMPLEXITY -->
+<section class="slide content-bg">
+  <div class="content-zone">
+    <div class="kicker-small">02 · Limitación Clásica</div>
+    <h2>Por qué el software tradicional no escala</h2>
+    <div class="grid2">
+      <div>
+        <p>Demostrado <b class="accent2">NP-Completo</b> por Ullmann (1976). El número de mapeos candidatos a evaluar:</p>
+        <div class="card mono" style="text-align:center; font-size:17px;">
+          |Candidatos| = N! / (N−k)!
+        </div>
+        <p style="margin-top:14px;">Para N = 1.000.000 de nodos y k = 5:</p>
+        <div class="big-num">~10<sup>30</sup></div>
+        <p class="small-cap">candidatos — imposible por fuerza bruta</p>
+      </div>
+      <div class="card">
+        <h3>Síntomas en producción</h3>
+        <table>
+          <tr><td>Latencia &gt; 30s en consultas profundas</td></tr>
+          <tr><td>Saturación de RAM (árbol de búsqueda)</td></tr>
+          <tr><td>Timeouts en Neo4j &gt; 5 saltos</td></tr>
+          <tr><td>Sin análisis de fraude en tiempo real</td></tr>
+        </table>
+        <p style="margin-top:10px; font-size:13px;">10M cuentas + 50M transacciones, patrón de 3 nodos →
+          peor caso <span class="mono">O(N³) ≈ 10²¹</span> operaciones (Neo4j + VF2).</p>
+      </div>
+    </div>
+  </div>
+  <div class="pageno">4</div>
+</section>
+
+<!-- 5. GROVER SOLUTION -->
+<section class="slide content-bg">
+  <div class="content-zone">
+    <div class="kicker-small">03 · Solución Cuántica</div>
+    <h2>Algoritmo de Grover (1996)</h2>
+    <div class="grid2">
+      <div>
+        <p>Búsqueda no estructurada en N elementos con <b class="accent">O(√N)</b> evaluaciones del oráculo,
+          frente a O(N) clásico.</p>
+        <p>Cada mapeo candidato f se codifica como un estado cuántico |f⟩. Con n qubits se representan
+          2<sup>n</sup> candidatos en <b class="accent2">superposición simultánea</b>:</p>
+        <div class="card mono" style="text-align:center; font-size:16px;">
+          |ψ₀⟩ = (1/√N) Σ |f⟩
+        </div>
+      </div>
+      <div class="card">
+        <h3>Tres componentes del circuito</h3>
+        <div class="flow-step"><b>Inicialización</b> — H⊗n crea la superposición uniforme</div>
+        <div class="flow-step"><b>Oráculo O</b> — invierte la fase de los mapeos válidos</div>
+        <div class="flow-step"><b>Difusor D</b> — refleja amplitudes: D = 2|ψ₀⟩⟨ψ₀| − I</div>
+        <p style="font-size:12px; margin-top:6px;">Tras k ≈ (π/4)√(N/t) iteraciones, la probabilidad de medir
+          un isomorfismo válido supera el 90%.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pageno">5</div>
+</section>
+
+<!-- 6. COMPLEXITY TABLE -->
+<section class="slide content-bg">
+  <div class="content-zone">
+    <div class="kicker-small">03 · Solución Cuántica</div>
+    <h2>Ventaja cuadrática</h2>
+    <div style="display:flex; align-items:center; justify-content:center; height: 78%;">
+      <table style="font-size:18px; max-width:780px;">
+        <tr><th>Métrica</th><th>Clásico O(N)</th><th>Cuántico (Grover) O(√N)</th></tr>
+        <tr><td>Peor caso</td><td class="mono">O(N) consultas</td><td class="mono accent">O(√N) consultas</td></tr>
+        <tr><td>N = 8 candidatos</td><td class="mono">8</td><td class="mono accent">~2.8</td></tr>
+        <tr><td>N = 1.024 candidatos</td><td class="mono">1.024</td><td class="mono accent">~32</td></tr>
+        <tr><td>N = 10⁶ candidatos</td><td class="mono">10⁶</td><td class="mono accent">~1.000</td></tr>
+      </table>
+    </div>
+    <p style="text-align:center; font-size:16px;">Búsqueda en 10⁶ elementos con solo
+      <b class="accent2">1.000</b> evaluaciones del oráculo.</p>
+  </div>
+  <div class="pageno">6</div>
+</section>
+
+<!-- 7. HYBRID ARCHITECTURE -->
+<section class="slide content-bg">
+  <div class="content-zone">
+    <div class="kicker-small">04 · Arquitectura</div>
+    <h2>Esquema híbrido clásico-cuántico</h2>
+    <div class="grid3">
+      <div class="card">
+        <h3>Capa Clásica</h3>
+        <p style="font-size:13px;">Neo4j gestiona ingesta, índices y consultas estándar (≤3 saltos).
+          Consultas profundas (&gt;3 saltos) se derivan al subgrafo candidato.</p>
+      </div>
+      <div class="card">
+        <h3>Capa de Traducción</h3>
+        <p style="font-size:13px;">Subgrafo → Matriz Laplaciana L = D−A → circuito cuántico.
+          Timeout 500ms → fallback clásico heurístico.</p>
+      </div>
+      <div class="card">
+        <h3>Coprocesador Cuántico</h3>
+        <p style="font-size:13px;">QPU en nube (IBM, Braket) o simulador local (AerSimulator
+          + GPU/CPU). Grover ejecuta y mide.</p>
+      </div>
+    </div>
+    <p style="text-align:center; margin-top:22px; font-size:14px; color:#6b7390;">
+      El sistema cuántico <b class="accent2">no reemplaza</b> Neo4j — actúa como coprocesador asíncrono
+      para consultas de alta profundidad.
+    </p>
+  </div>
+  <div class="pageno">7</div>
+</section>
+
+<!-- 8. QSRE REQUIREMENTS -->
+<section class="slide content-bg">
+  <div class="content-zone">
+    <div class="kicker-small">04 · Arquitectura</div>
+    <h2>Requerimientos QSRE</h2>
+    <table style="font-size:13px;">
+      <tr><th>ID</th><th>Tipo</th><th>Descripción</th></tr>
+      <tr><td class="mono">REQ-CLA-01/02</td><td>Funcional</td><td>Neo4j gestiona ingesta/consultas estándar; API recibe y devuelve resultados</td></tr>
+      <tr><td class="mono">REQ-HIB-01</td><td>Funcional</td><td>Extracción del subgrafo candidato y Matriz Laplaciana en &lt; T ms</td></tr>
+      <tr><td class="mono">REQ-HIB-02</td><td>Funcional</td><td>Transpilación de la Laplaciana a puertas cuánticas nativas del hardware</td></tr>
+      <tr><td class="mono">REQ-HIB-03</td><td>Funcional</td><td>Si latencia &gt; 500ms → derivar a solver heurístico clásico</td></tr>
+      <tr><td class="mono">REQ-CUA-01</td><td>Funcional</td><td>Ejecución del circuito por un número definido de shots estadísticos</td></tr>
+      <tr><td class="mono">RNF-01/02/03</td><td>No Funcional</td><td>Sobrecosto QRAM acotado · tolerancia a ruido NISQ · acceso QPU solo si conviene</td></tr>
+    </table>
+  </div>
+  <div class="pageno">8</div>
+</section>
+
+<!-- 9. DEMO MIN -->
+<section class="slide content-bg">
+  <div class="content-zone">
+    <div class="kicker-small">05 · Prueba de Concepto</div>
+    <h2>Demo mínimo — 4 nodos, 3 qubits</h2>
+    <div class="grid2">
+      <div>
+        <p>Host G: cuentas {0,1,2,3}, aristas (0→1), (1→2), (2→0), (0→3).
+          Patrón: ciclo de 3 nodos. Espacio de búsqueda: 8 candidatos.</p>
+        <table style="font-size:13px;">
+          <tr><td>Qubits</td><td class="mono">3</td></tr>
+          <tr><td>Soluciones válidas</td><td class="mono">3 (rotaciones del ciclo)</td></tr>
+          <tr><td>Iteraciones Grover óptimas</td><td class="mono">1</td></tr>
+          <tr><td>Prob. teórica de éxito</td><td class="mono accent">~84.8%</td></tr>
+          <tr><td>Backend</td><td class="mono">Qiskit AerSimulator</td></tr>
+        </table>
+        <p style="margin-top:10px; font-size:13px; color:#6b7390;">Los 3 estados válidos suben de 12.5%
+          (uniforme) a ~28% c/u; los inválidos caen a ~1.5%.</p>
+      </div>
+      <div style="display:flex; align-items:center;">
+        <img class="fig" src="../demo/resultados_grover_fraude.png">
+      </div>
+    </div>
+  </div>
+  <div class="pageno">9</div>
+</section>
+
+<!-- 10. SCALING -->
+<section class="slide content-bg">
+  <div class="content-zone">
+    <div class="kicker-small">06 · Escalado</div>
+    <h2>De 4 a 12 nodos: codificación logarítmica</h2>
+    <div class="grid2">
+      <div>
+        <p>Para N nodos host y patrón k=3, el número de qubits crece como
+          <b class="accent2">⌈log₂ P(N,3)⌉</b> — mientras el espacio de búsqueda clásico crece factorialmente.</p>
+        <table style="font-size:13px;">
+          <tr><th>N</th><th>Qubits</th><th>Candidatos</th><th>Speedup</th></tr>
+          <tr><td>4</td><td class="mono">5</td><td class="mono">24</td><td class="mono accent">12×</td></tr>
+          <tr><td>6</td><td class="mono">7</td><td class="mono">120</td><td class="mono accent">24×</td></tr>
+          <tr><td>8</td><td class="mono">9</td><td class="mono">336</td><td class="mono accent">67×</td></tr>
+          <tr><td>10</td><td class="mono">10</td><td class="mono">720</td><td class="mono accent">180×</td></tr>
+          <tr><td>12</td><td class="mono">11</td><td class="mono">1.320</td><td class="mono accent">264×</td></tr>
+        </table>
+      </div>
+      <div style="display:flex; align-items:center;">
+        <img class="fig" src="../demo/escalado_grover_fraude.png">
+      </div>
+    </div>
+  </div>
+  <div class="pageno">10</div>
+</section>
+
+<!-- 11. SCALING HISTOGRAM -->
+<section class="slide content-bg">
+  <div class="content-zone">
+    <div class="kicker-small">06 · Escalado</div>
+    <h2>Amplificación de estados válidos (N=8, 9 qubits)</h2>
+    <div style="display:flex; align-items:center; justify-content:center; height:78%;">
+      <img class="fig" src="../demo/histograma_N8_q9.png" style="max-height:430px;">
+    </div>
+    <p style="text-align:center; font-size:13px; color:#6b7390;">336 mapeos candidatos codificados en 9 qubits — éxito empírico ~99%.</p>
+  </div>
+  <div class="pageno">11</div>
+</section>
+
+<!-- 12. NISQ LIMITATIONS -->
+<section class="slide content-bg">
+  <div class="content-zone">
+    <div class="kicker-small">07 · Limitaciones</div>
+    <h2>Restricciones de la era NISQ</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3><span class="cross">✗</span> Cuello de botella QRAM</h3>
+        <p style="font-size:13px;">Cargar la matriz de adyacencia cuesta O(N) clásico — puede neutralizar
+          la ventaja de O(√N) en grafos masivos.</p>
+      </div>
+      <div class="card">
+        <h3><span class="cross">✗</span> Hardware limitado</h3>
+        <table style="font-size:12px;">
+          <tr><td>Error por puerta</td><td class="mono">~0.1–1%</td></tr>
+          <tr><td>Qubits lógicos</td><td class="mono">&lt; 1.000</td></tr>
+          <tr><td>Coherencia</td><td class="mono">microsegundos</td></tr>
+          <tr><td>Colas QPU nube</td><td class="mono">minutos</td></tr>
+        </table>
+      </div>
+    </div>
+    <p style="margin-top:16px; font-size:14px;"><span class="warn">⚠</span> Resultados probabilísticos: requieren
+      1024–4096 shots para una distribución estadísticamente confiable.</p>
+  </div>
+  <div class="pageno">12</div>
+</section>
+
+<!-- 13. VERDICT -->
+<section class="slide content-bg">
+  <div class="content-zone">
+    <div class="kicker-small">07 · Veredicto QSRE</div>
+    <h2>Parcialmente Factible / Exploratorio</h2>
+    <table style="font-size:14px;">
+      <tr><th>Dimensión</th><th>Estado</th><th>Notas</th></tr>
+      <tr><td>Correctitud algorítmica</td><td><span class="check">✓</span> Demostrada</td><td>Grover provee ventaja cuadrática teórica</td></tr>
+      <tr><td>Arquitectura de integración</td><td><span class="check">✓</span> Sólida</td><td>Delegación aislada protege el sistema productivo</td></tr>
+      <tr><td>Capa de traducción</td><td><span class="check">✓</span> Validada</td><td>PoC ejecutable con Qiskit (ver demo/)</td></tr>
+      <tr><td>Hardware actual (NISQ)</td><td><span class="cross">✗</span> Limitante</td><td>Qubits insuficientes para grafos de producción</td></tr>
+      <tr><td>Cuello de botella QRAM</td><td><span class="cross">✗</span> Sin solución madura</td><td>Neutraliza la ventaja en grafos masivos</td></tr>
+      <tr><td>Disponibilidad operativa</td><td><span class="warn">⚠</span> Condicional</td><td>Fallback clásico garantiza uptime</td></tr>
+    </table>
+    <p style="margin-top:14px; font-size:13px; color:#6b7390;">
+      Corto plazo: simuladores tensoriales locales (GPU). Medio plazo: migrar a QPU con &gt;1000 qubits lógicos FTQC.
+      No se recomienda reemplazar el motor de base de datos clásico.
+    </p>
+  </div>
+  <div class="pageno">13</div>
+</section>
+
+<!-- 14. REFERENCES -->
+<section class="slide content-bg">
+  <div class="content-zone">
+    <div class="kicker-small">08 · Referencias</div>
+    <h2>Referencias verificadas (selección)</h2>
+    <div class="grid2">
+      <div>
+        <div class="ref"><b>Grover, L. K. (1996).</b> A fast quantum mechanical algorithm for database search.
+          <i>STOC</i>, 212–219. <div class="doi">doi.org/10.1145/237814.237866</div></div>
+        <div class="ref"><b>Ullmann, J. R. (1976).</b> An algorithm for subgraph isomorphism. <i>JACM</i>, 23(1), 31–42.
+          <div class="doi">doi.org/10.1145/321921.321925</div></div>
+        <div class="ref"><b>Mariella, N., & Simonetto, A. (2023).</b> A Quantum Algorithm for the Sub-graph
+          Isomorphism Problem. <i>ACM TQC</i>, 4(2). <div class="doi">doi.org/10.1145/3569095</div></div>
+        <div class="ref"><b>Sepúlveda, S. et al. (2024).</b> Systematic Review on Requirements Engineering
+          in Quantum Computing. <i>Electronics</i>, 13(15), 2989. <div class="doi">doi.org/10.3390/electronics13152989</div></div>
+      </div>
+      <div>
+        <div class="ref"><b>Blanuša, J. et al. (2024).</b> Graph Feature Preprocessor: Real-time Subgraph-based
+          Feature Extraction for Financial Crime Detection. <i>ACM ICAIF</i>. <div class="doi">arXiv:2402.08593</div></div>
+        <div class="ref"><b>Innan, N. et al. (2024).</b> Financial Fraud Detection using Quantum Graph
+          Neural Networks. <i>Quantum Machine Intelligence</i>, 6(1). <div class="doi">doi.org/10.1007/s42484-024-00143-6</div></div>
+        <div class="ref"><b>Wang, Y. J. et al. (2024).</b> Quantum Computing in Community Detection for
+          Anti-Fraud Applications. <i>Entropy</i>, 26(12), 1026. <div class="doi">doi.org/10.3390/e26121026</div></div>
+        <div class="ref"><b>Vlasic, A., & Pham, A. (2025).</b> Scoring Anomalous Vertices Through Quantum Walks.
+          <i>Annalen der Physik</i>, 537(5). <div class="doi">doi.org/10.1002/andp.202400282</div></div>
+      </div>
+    </div>
+    <p style="margin-top:4px; font-size:12px; color:#9aa1bd;">Lista completa con notas de verificación en REFERENCIAS.md.</p>
+  </div>
+  <div class="pageno">14</div>
+</section>
+
+<!-- 15. THANK YOU -->
+<section class="slide title-bg">
+  <div class="title-zone">
+    <h1 style="font-size:40px;">Gracias</h1>
+    <p class="subtitle">Búsqueda Cuántica de Subgrafos — Detección de Fraude Circular</p>
+    <div style="margin-top:14px;">
+      <span class="badge">Sebastián Eduardo Puentes Prieto</span>
+      <span class="badge">EMI307 · UFRO</span>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
