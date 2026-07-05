@@ -38,12 +38,27 @@ Dado un grafo de transacciones G con millones de nodos y un patrón P (ciclo dir
 └── demo/
     ├── grover_subgraph_search.py   ← demo original: 4 nodos, 3 qubits, caso mínimo
     ├── grover_subgraph_scaled.py   ← versión escalable: N nodos parametrizable, sweep N=4..12
+    ├── run_demo.sh                 ← script que corre todo (crea venv, instala deps, ejecuta todo el set)
     └── requirements.txt            ← dependencias Python
 ```
 
 ---
 
 ## Ejecución Rápida
+
+### Opción 1: script único (recomendado)
+
+```bash
+cd demo
+./run_demo.sh          # corre demo mínimo + host-nodes 6/8/10/12 + sweep completo
+./run_demo.sh min      # solo el demo mínimo (4 nodos, 3 qubits)
+./run_demo.sh scaled   # solo los host-nodes individuales (6, 8, 10, 12)
+./run_demo.sh sweep    # solo la curva de escalado N=4..12
+```
+
+El script crea el venv en `demo/.venv` si no existe, instala dependencias solo si faltan, y al final lista los PNG generados.
+
+### Opción 2: comandos manuales
 
 ```bash
 cd demo
