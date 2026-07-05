@@ -64,7 +64,9 @@ python grover_subgraph_scaled.py --sweep
 python grover_subgraph_scaled.py --host-nodes 10 --gpu
 ```
 
-El script original imprime el análisis en consola y genera `resultados_grover_fraude.png` con el histograma de probabilidades y la visualización del grafo de transacciones. La versión escalable genera `histograma_N{N}_q{qubits}.png` por cada ejecución, y `escalado_grover_fraude.png` con la curva de speedup al usar `--sweep`.
+El script original imprime el análisis en consola y genera `resultados_grover_fraude.png` con el histograma de probabilidades y la visualización del grafo de transacciones. La versión escalable genera `histograma_N{N}_q{qubits}.png` y `grafo_host_N{N}.png` (grafo de transacciones con el anillo de fraude resaltado) por cada ejecución, y `escalado_grover_fraude.png` con la curva de speedup al usar `--sweep`. `circuito_grover.png` es un diagrama de referencia del circuito de Grover (3 qubits, 1 iteración) generado con `qc.draw('mpl')`.
+
+Ver `GUIONES.md` → sección "Material de apoyo" para el guion detallado de cómo leer cada uno de estos gráficos (grafos, histogramas y el circuito).
 
 ---
 

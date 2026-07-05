@@ -271,6 +271,80 @@ def ejecutar_caso(n_host, k=3, shots=1024, seed=42, gpu=False, verbose=True):
     }
 
 
+def graficar_grafo_host(resultado, output=None):
+    """
+    Dibuja el grafo host en disposición circular: nodos numerados, aristas
+    dirigidas, y el anillo de fraude garantizado (0→1→...→(k-1)→0) resaltado.
+    """
+    n_host = resultado['n_host']
+    k = resultado['k']
+    edges = resultado['edges']
+
+    fig, ax = plt.subplots(figsize=(6.5, 6.5))
+    ax.set_aspect('equal')
+    ax.axis('off')
+    ax.set_title(
+        f'Grafo de transacciones — {n_host} cuentas · anillo de fraude de {k} nodos',
+        fontsize=11
+    )
+
+    radio = 1.0
+    pos = {
+        i: (radio * np.sin(2 * np.pi * i / n_host),
+            radio * np.cos(2 * np.pi * i / n_host))
+        for i in range(n_host)
+    }
+
+    anillo_fraude = frozenset((i, (i + 1) % k) for i in range(k))
+
+    for (u, v) in sorted(edges):
+        x1, y1 = pos[u]
+        x2, y2 = pos[v]
+        es_fraude = (u, v) in anillo_fraude
+        ax.annotate(
+            '', xy=(x2, y2), xytext=(x1, y1),
+            arrowprops=dict(
+                arrowstyle='->',
+                lw=2.6 if es_fraude else 1.0,
+                color='#c0392b' if es_fraude else '#95a5a6',
+                connectionstyle='arc3,rad=0.12',
+                mutation_scale=16,
+                alpha=0.95 if es_fraude else 0.65,
+                shrinkA=14, shrinkB=14,
+            ),
+            zorder=4 if es_fraude else 2,
+        )
+
+    for i, (x, y) in pos.items():
+        en_anillo = i < k
+        ax.add_patch(plt.Circle(
+            (x, y), 0.13,
+            color='#c0392b' if en_anillo else '#7f8c8d',
+            alpha=0.92, zorder=5
+        ))
+        ax.text(x, y, str(i), ha='center', va='center',
+                fontsize=11, fontweight='bold', color='white', zorder=6)
+
+    ax.set_xlim(-1.45, 1.45)
+    ax.set_ylim(-1.45, 1.45)
+    ax.text(
+        0, -1.4,
+        f'Rojo: ciclo de fraude 0→1→…→{k-1}→0   ·   Gris: transacciones legítimas',
+        ha='center', fontsize=8.5, style='italic', color='#555'
+    )
+
+    plt.tight_layout()
+    if output is None:
+        output = f'grafo_host_N{n_host}.png'
+    try:
+        plt.savefig(output, dpi=150, bbox_inches='tight')
+        print(f"Grafo host guardado: {output}")
+    except Exception as e:
+        print(f"Error guardando grafo host: {e}")
+    plt.close()
+    return output
+
+
 # ──────────────────────────────────────────────────────────────────────────────
 # 5. MODO SWEEP: CURVA DE ESCALADO
 # ──────────────────────────────────────────────────────────────────────────────
@@ -540,6 +614,7 @@ def main():
         )
         if r:
             graficar_histograma(r, args.shots)
+            graficar_grafo_host(r)
             print(f"\n{'─'*55}")
             print(f"RESUMEN FINAL")
             print(f"{'─'*55}")
